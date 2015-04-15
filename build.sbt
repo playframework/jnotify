@@ -2,16 +2,19 @@ import bintray.Keys._
 
 organization := "net.contentobjects.jnotify"
 name := "jnotify"
-version := "0.94"
+version := s"${jnotifyVersion.value}-play-1"
 description := "jnotify"
 homepage := Some(url("https://github.com/playframework/jnotify"))
 
 crossPaths := false
 autoScalaLibrary := false
 
+lazy val jnotifyVersion = settingKey[String]("The version of JNotify")
+jnotifyVersion := "0.94"
+
 lazy val downloadAndExtractJnotify = taskKey[File]("Download and extract JNotify")
 downloadAndExtractJnotify := {
-  val v = version.value
+  val v = jnotifyVersion.value
   val zip = target.value / s"jnotify-$v.zip"
   IO.download(new URL(s"http://downloads.sourceforge.net/project/jnotify/jnotify/jnotify-$v/jnotify-lib-$v.zip"), zip)
   val jnotify = target.value / "jnotify"
@@ -26,7 +29,7 @@ downloadAndExtractJnotify := {
 mappings in (Compile, packageBin) := {
   val jnotify = downloadAndExtractJnotify.value
   val jnotifyJarExtracted = target.value / "jnotify-jar"
-  IO.unzip(jnotify / s"jnotify-${version.value}.jar", jnotifyJarExtracted)
+  IO.unzip(jnotify / s"jnotify-${jnotifyVersion.value}.jar", jnotifyJarExtracted)
 
   val jnotifyMappings = jnotifyJarExtracted.***.filter(f => f.isFile && f.getName != "MANIFEST.MF") pair relativeTo(jnotifyJarExtracted)
 
@@ -62,7 +65,7 @@ packageOptions in (Compile, packageBin) += {
 }
 
 
-packageSrc in Compile := downloadAndExtractJnotify.value / s"jnotify-${version.value}-src.zip"
+packageSrc in Compile := downloadAndExtractJnotify.value / s"jnotify-${jnotifyVersion.value}-src.zip"
 
 publishArtifact in Test := false
 publishArtifact in packageDoc := false
