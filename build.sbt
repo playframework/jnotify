@@ -1,8 +1,6 @@
-import bintray.Keys._
-
-organization := "net.contentobjects.jnotify"
+organization := "com.lightbend.play"
 name := "jnotify"
-version := s"${jnotifyVersion.value}-play-1"
+version := s"${jnotifyVersion.value}-play-2"
 description := "jnotify"
 homepage := Some(url("https://github.com/playframework/jnotify"))
 
@@ -66,13 +64,23 @@ packageOptions in (Compile, packageBin) += {
 
 
 packageSrc in Compile := downloadAndExtractJnotify.value / s"jnotify-${jnotifyVersion.value}-src.zip"
-
 publishArtifact in Test := false
-publishArtifact in packageDoc := false
 
-bintraySettings
 licenses += ("LGPL-2.1", url("https://www.gnu.org/licenses/lgpl-2.1.html"))
-(vcsUrl in bintray) := Some("pserver:anonymous@jnotify.cvs.sourceforge.net:/cvsroot/jnotify")
-publishMavenStyle := false
-repository in bintray := "sbt-plugin-releases"
-bintrayOrganization in bintray := Some("playframework")
+publishMavenStyle := true
+sonatypeProfileName := "com.lightbend"
+
+pomExtra in Global := {
+  <scm>
+    <url>https://github.com/playframework/jnotify</url>
+    <connection>scm:git:git@github.com:playframework/jnotify.git</connection>
+  </scm>
+  <developers>
+    <developer>
+      <id>playframework</id>
+      <name>Play Framework Team</name>
+      <url>https://github.com/playframework</url>
+    </developer>
+  </developers>
+}
+
